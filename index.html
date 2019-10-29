@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+        hello! {{ content }}<br/>
+        <span>{{description}}</span>
+    </div>
+
+
+<script type="module">
+    import Due from './core/index.js';
+    window.app = new Due({
+        el: 'app',
+        data: {
+            content: 'panda',
+            description: 'I AM A PANDA',
+            obj: {
+                x: 1,
+                y: 2
+            },
+            list: [{a: 1, b: 2},{a: 3, b: 4}]
+        }
+    });
+</script>
+</body>
+</html>
