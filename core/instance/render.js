@@ -24,6 +24,14 @@ function renderNode(vm, vnode) {
             }
             vnode.ele.nodeValue = result;
         }
+    } else if (vnode.nodeType == 1 && vnode.tag == 'INPUT') {
+        //根据当前vnode搜索在之前绑定的映射中是否存在v-model的属性值（如果有，返回数组，且长度为1）
+        let nameList = vnode2Template.get(vnode);
+        if (nameList) {
+            //根据v-model上的属性值去data中搜索对应值，并返回到input元素中
+            let templateValue = getTemplateValue([vm._data, vnode.env], nameList[0]);
+            vnode.ele.value = templateValue;
+        }
     } else {
         if (vnode.children.length > 0) {
             for (let i = 0 ; i < vnode.children.length; i ++) {
@@ -36,7 +44,6 @@ function renderNode(vm, vnode) {
 export function renderData(vm, data) {
     let vnodes = template2VNode.get(data);
     if (vnodes != null) {
-        // console.log(vm);
         for (let i = 0 ; i < vnodes.length; i ++) {
             renderNode(vm, vnodes[i]);
         }
@@ -57,6 +64,8 @@ export function prepareRender(vm, vnode) {
     if (vnode == null) return;
     //判断是否为元素节点
     if (vnode.nodeType == 1) {
+        //解析元素节点是否有v-model
+        analysisAttr(vm, vnode);
         for (let i = 0; vnode.children && i < vnode.children.length; i ++) {
             prepareRender(vm, vnode.children[i]);
         }
@@ -112,5 +121,13 @@ function getTemplateName(template) {
         return template.substring(2, template.length - 2);
     } else {
         return template;
+    }
+}
+
+function analysisAttr(vm, vnode) {
+    let attrNames = vnode.ele.getAttributeNames();
+    if (attrNames.indexOf('v-model') > -1) {
+        setTemplate2VNode(vnode.ele.getAttribute('v-model'), vnode);
+        setVNode2Template(vnode.ele.getAttribute('v-model'), vnode);
     }
 }
