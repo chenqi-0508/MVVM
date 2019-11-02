@@ -1,4 +1,5 @@
 import VNode from "../vdom/vnode.js";
+import {prepareRender, getTemplate2VNode, getVNode2Template} from "./render.js";
 
 export function initMount(Due) {
     Due.prototype.$mount = function (el) {
@@ -12,6 +13,9 @@ export function mount(vm, elm) {
     //进行挂载
     vm._vnode = constructVNode(vm, elm, null);
     //进行预备渲染
+    prepareRender(vm, vm._vnode);
+    // console.log(getTemplate2VNode());
+    // console.log(getVNode2Template());
 }
 
 function constructVNode(vm, elm, parent) {

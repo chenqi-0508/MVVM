@@ -1,3 +1,5 @@
+import {renderData} from "./render.js";
+
 const arrayProto = Array.prototype;//获取Array原型
 
 function defArrayFunc(obj, func, namespace, vm) {//重新定义push，pop，shift，unshift方法
@@ -40,19 +42,19 @@ function constructObjectProxy(vm, obj, namespace){
             configurable: true,
             get: () => obj[prop],
             set: v => {
-                // console.log(getNameSpace(namespace, prop));
                 obj[prop] = v;
+                renderData(vm, getNameSpace(namespace, prop));
             }
         });
         Object.defineProperty(vm, prop, {
             configurable: true,
             get: () => obj[prop],
             set: v => {
-                // console.log(getNameSpace(namespace, prop));
                 obj[prop] = v;
+                renderData(vm, getNameSpace(namespace, prop));
             }
         });
-        if (obj[prop] instanceof Object){//对象中还有对，则进项递归处理
+        if (obj[prop] instanceof Object){//对象中还有对象，则进项递归处理
             proxyObj[prop] = constructProxy(vm, obj[prop], getNameSpace(namespace, prop));
         }
     }
